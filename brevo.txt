@@ -1,0 +1,35 @@
+Yes, they can coexist, but there are some important DNS rules.
+
+If you're using:
+
+Resend for transactional emails (OTP, password resets, receipts)
+Brevo for newsletters
+
+that's a common setup.
+
+They won't affect each other if:
+Their DKIM records use different selectors (they usually do).
+Their tracking CNAMEs use different hostnames.
+You don't create conflicting records with the same host and type.
+The main thing to watch out for is SPF
+
+Both services typically ask you to add an SPF record. You cannot have two separate SPF TXT records for the same domain. For example, this is incorrect:
+
+TXT @ "v=spf1 include:spf.resend.com ~all"
+TXT @ "v=spf1 include:spf.brevo.com ~all"
+
+Instead, you combine them into one SPF record, for example:
+
+v=spf1 include:spf.resend.com include:spf.brevo.com ~all
+
+(Use the exact includes provided by each service's documentation.)
+
+Recommendation
+✅ Use Resend for transactional emails.
+✅ Use Brevo for newsletters.
+✅ Combine the SPF records into one if both require SPF.
+✅ Add both providers' DKIM records.
+
+If you're using Hostinger DNS, I can also help you verify that your records won't conflict.
+
+If you paste your current DNS records (or screenshots of the DNS entries for Resend and Brevo), I'll tell you exactly which ones to keep, merge, or modify.
